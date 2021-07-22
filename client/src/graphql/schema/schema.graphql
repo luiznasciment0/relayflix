@@ -1,0 +1,66 @@
+schema {
+  query: RootQuery
+}
+
+"""Exposes a URL that specifies the behaviour of this scalar."""
+directive @specifiedBy(
+  """The URL that specifies the behaviour of this scalar."""
+  url: String!
+) on SCALAR
+
+type Movie {
+  imdbID: String!
+  Title: String!
+  Year: String!
+  Type: String!
+  Poster: String!
+}
+
+type MoviesQueryType {
+  Search: [Movie]!
+  totalResults: String!
+  Response: String!
+}
+
+type RootQuery {
+  moviesByTitle(title: String): MoviesQueryType
+  videosByTitle(title: String): VideosQueryType
+}
+
+type Snippet {
+  channelId: String!
+  channelTitle: String!
+  description: String!
+  liveBroadcastContent: String!
+  publishTime: String!
+  publishedAt: String!
+  thumbnails: Thumbnails!
+  title: String!
+}
+
+type Thumbnail {
+  height: Int!
+  width: Int!
+  url: String!
+}
+
+type Thumbnails {
+  default: Thumbnail!
+  high: Thumbnail!
+  medium: Thumbnail!
+}
+
+type Video {
+  id: VideoID!
+  snippet: Snippet!
+}
+
+type VideoID {
+  kind: String!
+  videoId: String!
+}
+
+type VideosQueryType {
+  items: [Video]!
+}
+
