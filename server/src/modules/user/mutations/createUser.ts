@@ -1,8 +1,8 @@
-import { GraphQLList, GraphQLString } from 'graphql'
+import { GraphQLList, GraphQLString, GraphQLNonNull } from 'graphql'
 import bcrypt from 'bcrypt'
 import { pool } from '../../../index'
 import UserType from '../../../modules/user/UserType'
-import { getAllUsers } from '../getAllUsers'
+import { checkUserEmail } from '../checkUserEmail'
 
 type CreateUserArgs = {
   name: string
@@ -20,14 +20,20 @@ const createNewUser = async ({
   interests
 }: CreateUserArgs) => {
   try {
-    const insertNewUser = await pool.query(
+    await pool.query(
       'insert into users2 (name, username, email, password, interests) values ($1, $2, $3, $4, $5)',
       [name, username, email, password, interests]
     )
 
-    return insertNewUser?.rows
+    return {
+      isUserCreated: true,
+      error: null
+    }
   } catch (error) {
-    throw Error(`Error when inserting new user: ${error}`)
+    return {
+      isUserCreated: false,
+      error: Error(`Error when creating new user: ${error}`)
+    }
   }
 }
 
@@ -48,7 +54,7 @@ const checkMissedUserData = ({
 
   for (const key in missedUserData) {
     if (missedUserData[key]) {
-      throw Error(`Missing user data: ${missedUserData[key]}`)
+      return Error(`Missing user data: ${missedUserData[key]}`)
     }
   }
 }
@@ -56,38 +62,73 @@ const checkMissedUserData = ({
 const createUser = {
   type: UserType,
   args: {
-    name: { type: GraphQLString },
-    username: { type: GraphQLString },
-    email: { type: GraphQLString },
-    password: { type: GraphQLString },
-    interests: { type: GraphQLList(GraphQLString) }
+    name: { type: GraphQLNonNull(GraphQLString) },
+    username: { type: GraphQLNonNull(GraphQLString) },
+    email: { type: GraphQLNonNull(GraphQLString) },
+    password: { type: GraphQLNonNull(GraphQLString) },
+    interests: { type: GraphQLNonNull(GraphQLList(GraphQLString)) }
   },
   resolve: async (_parent: any, args: any) => {
     const { name, username, email, password, interests }: CreateUserArgs = args
-    const allUsers = await getAllUsers()
+
     const isMissingUserData =
       !name || !username || !email || !password || !interests
-
-    const userAlreadyExists = allUsers.includes(email)
-    const passwordHashSalt = await bcrypt.genSalt(10)
-
     if (isMissingUserData) {
-      return checkMissedUserData({ name, username, email, password, interests })
+      return {
+        user: null,
+        error: checkMissedUserData({
+          name,
+          username,
+          email,
+          password,
+          interests
+        })
+      }
     }
 
-    if (userAlreadyExists) {
-      throw Error('User already exists!')
+    const userAlreadyExists = await checkUserEmail(email)
+    if (userAlreadyExists.error) {
+      return {
+        user: null,
+        error: userAlreadyExists.error
+      }
     }
 
+    if (userAlreadyExists.userAlreadyExists) {
+      return {
+        user: null,
+        error: 'User already exists'
+      }
+    }
+
+    const passwordHashSalt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, passwordHashSalt)
 
-    return await createNewUser({
+    const newUser = await createNewUser({
       name,
       username,
       email,
       password: hashedPassword,
       interests
     })
+
+    if (newUser.error || !newUser.isUserCreated) {
+      return {
+        user: null,
+        error: newUser.error
+      }
+    }
+
+    return {
+      user: {
+        name,
+        username,
+        email,
+        password,
+        interests
+      },
+      error: null
+    }
   }
 }
 
