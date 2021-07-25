@@ -65,12 +65,10 @@ const createUser = {
   resolve: async (_parent: any, args: any) => {
     const { name, username, email, password, interests }: CreateUserArgs = args
     const allUsers = await getAllUsers()
-
     const isMissingUserData =
       !name || !username || !email || !password || !interests
 
     const userAlreadyExists = allUsers.includes(email)
-
     const passwordHashSalt = await bcrypt.genSalt(10)
 
     if (isMissingUserData) {
