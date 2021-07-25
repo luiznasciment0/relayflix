@@ -31,6 +31,28 @@ const createNewUser = async ({
   }
 }
 
+const checkMissedUserData = ({
+  name,
+  email,
+  username,
+  password,
+  interests
+}: CreateUserArgs) => {
+  const missedUserData: { [key: string]: boolean } = {
+    missingName: !name,
+    missingEmail: !email,
+    missingUsername: !username,
+    missingPassword: !password,
+    missingInterests: !interests
+  }
+
+  for (const key in missedUserData) {
+    if (missedUserData[key]) {
+      throw Error(`Missing user data: ${missedUserData[key]}`)
+    }
+  }
+}
+
 const createUser = {
   type: UserType,
   args: {
@@ -41,31 +63,21 @@ const createUser = {
     interests: { type: GraphQLList(GraphQLString) }
   },
   resolve: async (_parent: any, args: any) => {
-    const { name, username, email, password, interests } = args
+    const { name, username, email, password, interests }: CreateUserArgs = args
+    const allUsers = await getAllUsers()
 
     const isMissingUserData =
       !name || !username || !email || !password || !interests
 
-    const allUsers = await getAllUsers()
+    const userAlreadyExists = allUsers.includes(email)
+
     const passwordHashSalt = await bcrypt.genSalt(10)
 
     if (isMissingUserData) {
-      const missedUserData: { [key: string]: boolean } = {
-        missingName: !name,
-        missingEmail: !email,
-        missingUsername: !username,
-        missingPassword: !password,
-        missingInterests: !interests
-      }
-
-      for (const key in missedUserData) {
-        if (missedUserData[key]) {
-          throw Error(`Missing user data: ${missedUserData[key]}`)
-        }
-      }
+      return checkMissedUserData({ name, username, email, password, interests })
     }
 
-    if (allUsers.includes(email)) {
+    if (userAlreadyExists) {
       throw Error('User already exists!')
     }
 
