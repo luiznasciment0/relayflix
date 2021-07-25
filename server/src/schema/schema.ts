@@ -1,8 +1,8 @@
-import { GraphQLSchema } from "graphql"
-import RootQuery from "../graphql/queries/rootQuery"
+import { GraphQLSchema } from 'graphql'
+import RootQuery from '../graphql/queries/rootQuery'
 
 const Schema = new GraphQLSchema({
-    query: RootQuery,
+  query: RootQuery
 })
 
 export default Schema

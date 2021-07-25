@@ -1,10 +1,10 @@
-import { GraphQLList, GraphQLObjectType, GraphQLString } from "graphql"
-import { pool } from "../.."
-import { fetchMovieByTitle } from "../../services/movies"
-import { fetchYoutubeVideos } from "../../services/videos"
-import MoviesQueryType from "./movies"
-import VideosQueryType from "./videos"
-import UserType from "../../modules/user/UserType"
+import { GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql'
+import { pool } from '../../index'
+import { fetchMovieByTitle } from '../../services/movies'
+import { fetchYoutubeVideos } from '../../services/videos'
+import MoviesQueryType from './movies'
+import VideosQueryType from './videos'
+import UserType from '../../modules/user/UserType'
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQuery',
@@ -12,17 +12,17 @@ const RootQuery = new GraphQLObjectType({
     moviesByTitle: {
       type: MoviesQueryType,
       args: {
-        title: { type: GraphQLString },
+        title: { type: GraphQLString }
       },
       resolve: async (parent, args) => {
         const { title } = args
         return await fetchMovieByTitle(title)
-      },
+      }
     },
     videosByTitle: {
       type: VideosQueryType,
       args: {
-        title: { type: GraphQLString },
+        title: { type: GraphQLString }
       },
       resolve: async (parent, args) => {
         const { title } = args
@@ -38,7 +38,7 @@ const RootQuery = new GraphQLObjectType({
 
             return users?.rows
           } catch (error) {
-            console.log('error', error)
+            throw Error(`Error when getting all users: ${error}`)
           }
         }
 

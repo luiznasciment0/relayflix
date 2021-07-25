@@ -1,13 +1,13 @@
-import { rapidMoviesApi } from "./api"
+import { rapidMoviesApi } from './api'
 
 export const fetchMovieByTitle = async (title: string) => {
-    try {
-        const response = await rapidMoviesApi.get('/', {
-            params: { s: title, page: '1', r: 'json' },
-        })
-    
-        return response.data
-    } catch (error) {
-        throw error
-    }
+  try {
+    const response = await rapidMoviesApi.get('/', {
+      params: { s: title, page: '1', r: 'json' }
+    })
+
+    return response.data
+  } catch (error) {
+    throw Error(`Error when fetching movie by title: ${error}`)
+  }
 }

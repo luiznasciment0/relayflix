@@ -7,7 +7,7 @@ export const pool = new Pool({
   host: config.DB_HOST,
   database: config.DB_DATABASE,
   password: config.DB_PASSWORD,
-  port: Number(config.DB_PORT) || 5432,
+  port: Number(config.DB_PORT) || 5432
 })
 
 app.listen(config.PORT, () => {

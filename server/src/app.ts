@@ -11,9 +11,14 @@ const app = new Koa()
 app.use(bodyParser())
 app.use(cors())
 
-app.use(mount('/graphql', graphqlHTTP({
-  graphiql: true,
-  schema,
-})))
+app.use(
+  mount(
+    '/graphql',
+    graphqlHTTP({
+      graphiql: true,
+      schema
+    })
+  )
+)
 
 export default app
