@@ -35,7 +35,7 @@ const RootQuery = new GraphQLObjectType({
       resolve: async (parent, args) => {
         const data = await getAllUsers()
 
-        return data
+        return data.users
       }
     }
   }
