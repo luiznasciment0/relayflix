@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "sourceMap": true,
-    "target": "esnext",  
+    "target": "esnext",
     "module": "commonjs",
     "outDir": "dist",
     "rootDir": "./",
     "declaration": true,
-    "strict": true,      
-    "esModuleInterop": true, 
-    "skipLibCheck": true,                           
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
   }
 }

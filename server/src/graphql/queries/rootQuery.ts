@@ -5,6 +5,7 @@ import { fetchYoutubeVideos } from '../../services/videos'
 import MoviesQueryType from './movies'
 import VideosQueryType from './videos'
 import UserType from '../../modules/user/UserType'
+import { getAllUsers } from '../../modules/user/getAllUsers'
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQuery',
@@ -32,19 +33,9 @@ const RootQuery = new GraphQLObjectType({
     users: {
       type: GraphQLList(UserType),
       resolve: async (parent, args) => {
-        const getAllUsers = async () => {
-          try {
-            const users = await pool.query('select * from users')
-
-            return users?.rows
-          } catch (error) {
-            throw Error(`Error when getting all users: ${error}`)
-          }
-        }
-
         const data = await getAllUsers()
 
-        return data
+        return data.users
       }
     }
   }
