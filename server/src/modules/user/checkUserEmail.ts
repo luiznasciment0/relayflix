@@ -1,6 +1,11 @@
 import { pool } from '../..'
 
-export const checkUserEmail = async (email: string) => {
+export const checkUserEmail = async (
+  email: string
+): Promise<
+  | { userAlreadyExists: boolean; error: null }
+  | { userAlreadyExists: null; error: Error }
+> => {
   try {
     const emails = await pool.query(
       'select email from users where email = ($1)',
