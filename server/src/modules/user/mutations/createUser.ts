@@ -86,15 +86,8 @@ const createUser = {
       }
     }
 
-    const userAlreadyExists = await checkUserEmail(email)
-    if (userAlreadyExists.error) {
-      return {
-        user: null,
-        error: userAlreadyExists.error
-      }
-    }
-
-    if (userAlreadyExists.userAlreadyExists) {
+    const hasUser = await checkUserEmail(email)
+    if (hasUser.userAlreadyExists) {
       return {
         user: null,
         error: 'User already exists'
