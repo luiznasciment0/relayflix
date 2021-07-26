@@ -3,7 +3,7 @@ import { pool } from '../..'
 export const checkUserEmail = async (email: string) => {
   try {
     const emails = await pool.query(
-      'select email from users2 where email = ($1)',
+      'select email from users where email = ($1)',
       [email]
     )
 

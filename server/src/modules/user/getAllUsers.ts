@@ -1,10 +1,10 @@
 import { pool } from '../..'
 
 type User = {
-  name?: string
-  username?: string
-  email?: string
-  password?: string
+  name: string
+  username: string
+  email: string
+  password: string
   interests?: string[]
 }
 
@@ -13,7 +13,7 @@ export const getAllUsers = async (): Promise<{
   error: Error | null
 }> => {
   try {
-    const users = await pool.query('select * from users2')
+    const users = await pool.query('select * from users')
 
     return {
       users: users.rows,
