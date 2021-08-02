@@ -1,6 +1,7 @@
 import { GraphQLString, GraphQLNonNull, GraphQLList } from 'graphql'
 import { pool } from '../../../'
 import UserType from '../../../modules/user/UserType'
+import { checkUserEmail } from '../checkUserEmail'
 
 type AddUserInterests = {
   email: string
@@ -34,6 +35,14 @@ const addUserInterests = {
   },
   resolve: async (_parent: any, args: any) => {
     const { email, interests }: AddUserInterests = args
+
+    const hasUser = await checkUserEmail(email)
+    if (!hasUser.userAlreadyExists) {
+      return {
+        interests: null,
+        error: "User don't exist"
+      }
+    }
 
     const addInterests = await insertUserInterests(interests, email)
 
