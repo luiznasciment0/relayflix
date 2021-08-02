@@ -19,7 +19,7 @@ const createNewUser = async ({
 }: CreateUserArgs) => {
   try {
     await pool.query(
-      'insert into users (name, username, email, password) values ($1, $2, $3, $4, $5)',
+      'insert into users (name, username, email, password) values ($1, $2, $3, $4)',
       [name, username, email, password]
     )
 
