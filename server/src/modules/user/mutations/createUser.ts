@@ -1,4 +1,4 @@
-import { GraphQLList, GraphQLString, GraphQLNonNull } from 'graphql'
+import { GraphQLString, GraphQLNonNull } from 'graphql'
 import bcrypt from 'bcrypt'
 import { pool } from '../../../index'
 import UserType from '../../../modules/user/UserType'
@@ -9,20 +9,18 @@ type CreateUserArgs = {
   username: string
   email: string
   password: string
-  interests: string[]
 }
 
 const createNewUser = async ({
   name,
   username,
   email,
-  password,
-  interests
+  password
 }: CreateUserArgs) => {
   try {
     await pool.query(
-      'insert into users2 (name, username, email, password, interests) values ($1, $2, $3, $4, $5)',
-      [name, username, email, password, interests]
+      'insert into users (name, username, email, password) values ($1, $2, $3, $4)',
+      [name, username, email, password]
     )
 
     return {
@@ -41,15 +39,13 @@ const checkMissedUserData = ({
   name,
   email,
   username,
-  password,
-  interests
+  password
 }: CreateUserArgs) => {
   const missedUserData: { [key: string]: boolean } = {
     missingName: !name,
     missingEmail: !email,
     missingUsername: !username,
-    missingPassword: !password,
-    missingInterests: !interests
+    missingPassword: !password
   }
 
   for (const key in missedUserData) {
@@ -65,14 +61,12 @@ const createUser = {
     name: { type: GraphQLNonNull(GraphQLString) },
     username: { type: GraphQLNonNull(GraphQLString) },
     email: { type: GraphQLNonNull(GraphQLString) },
-    password: { type: GraphQLNonNull(GraphQLString) },
-    interests: { type: GraphQLNonNull(GraphQLList(GraphQLString)) }
+    password: { type: GraphQLNonNull(GraphQLString) }
   },
   resolve: async (_parent: any, args: any) => {
-    const { name, username, email, password, interests }: CreateUserArgs = args
+    const { name, username, email, password }: CreateUserArgs = args
 
-    const isMissingUserData =
-      !name || !username || !email || !password || !interests
+    const isMissingUserData = !name || !username || !email || !password
     if (isMissingUserData) {
       return {
         user: null,
@@ -80,8 +74,7 @@ const createUser = {
           name,
           username,
           email,
-          password,
-          interests
+          password
         })
       }
     }
@@ -101,8 +94,7 @@ const createUser = {
       name,
       username,
       email,
-      password: hashedPassword,
-      interests
+      password: hashedPassword
     })
 
     if (newUser.error || !newUser.isUserCreated) {
@@ -117,8 +109,7 @@ const createUser = {
         name,
         username,
         email,
-        password,
-        interests
+        password
       },
       error: null
     }
