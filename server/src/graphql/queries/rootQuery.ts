@@ -1,5 +1,4 @@
 import { GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql'
-import { pool } from '../../index'
 import { fetchMovieByTitle } from '../../services/movies'
 import { fetchYoutubeVideos } from '../../services/videos'
 import MoviesQueryType from './movies'
@@ -15,7 +14,7 @@ const RootQuery = new GraphQLObjectType({
       args: {
         title: { type: GraphQLString }
       },
-      resolve: async (parent, args) => {
+      resolve: async (_parent, args) => {
         const { title } = args
         return await fetchMovieByTitle(title)
       }
@@ -25,14 +24,14 @@ const RootQuery = new GraphQLObjectType({
       args: {
         title: { type: GraphQLString }
       },
-      resolve: async (parent, args) => {
+      resolve: async (_parent, args) => {
         const { title } = args
         return await fetchYoutubeVideos(title)
       }
     },
     users: {
       type: GraphQLList(UserType),
-      resolve: async (parent, args) => {
+      resolve: async (_parent, _args) => {
         const data = await getAllUsers()
 
         return data.users
