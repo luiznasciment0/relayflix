@@ -8,6 +8,7 @@ import { getAllUsers } from '../../modules/user/getAllUsers'
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQuery',
+  description: 'The root of all queries',
   fields: {
     moviesByTitle: {
       type: MoviesQueryType,
