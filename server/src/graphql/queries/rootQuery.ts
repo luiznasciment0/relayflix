@@ -1,10 +1,11 @@
 import { GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql'
-import { fetchMovieByTitle } from '../../services/movies'
-import { fetchYoutubeVideos } from '../../services/videos'
+
+import { fetchMovieByTitle } from 'src/services/movies'
+import { fetchYoutubeVideos } from 'src/services/videos'
+import { UserType } from 'src/modules/user/UserType'
+import { getAllUsers } from 'src/modules/user/getAllUsers'
 import MoviesQueryType from './movies'
 import VideosQueryType from './videos'
-import UserType from '../../modules/user/UserType'
-import { getAllUsers } from '../../modules/user/getAllUsers'
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQuery',
