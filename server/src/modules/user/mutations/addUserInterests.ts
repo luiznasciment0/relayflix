@@ -1,6 +1,7 @@
 import { GraphQLString, GraphQLNonNull, GraphQLList } from 'graphql'
-import { pool } from '../../../'
-import UserType from '../../../modules/user/UserType'
+
+import { pool } from 'src/index'
+import { UserType } from 'src/modules/user/UserType'
 import { checkUserEmail } from '../checkUserEmail'
 
 type AddUserInterests = {
