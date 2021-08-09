@@ -61,30 +61,17 @@ const checkMissedUserData = ({
 const UserRegisterMutation = mutationWithClientMutationId({
   name: 'UserRegisterMutation',
   inputFields: {
-    name: {
-      type: new GraphQLNonNull(GraphQLString)
-    },
-    username: {
-      type: new GraphQLNonNull(GraphQLString)
-    },
-    email: {
-      type: new GraphQLNonNull(GraphQLString)
-    },
-    password: {
-      type: new GraphQLNonNull(GraphQLString)
-    }
+    name: { type: GraphQLNonNull(GraphQLString) },
+    username: { type: GraphQLNonNull(GraphQLString) },
+    email: { type: GraphQLNonNull(GraphQLString) },
+    password: { type: GraphQLNonNull(GraphQLString) }
   },
   mutateAndGetPayload: async ({
     name,
     username,
     email,
     password
-  }: {
-    name: string
-    username: string
-    email: string
-    password: string
-  }) => {
+  }: CreateUserArgs) => {
     const isMissingUserData = !name || !username || !email || !password
     if (isMissingUserData) {
       return {
