@@ -1,5 +1,9 @@
 import { GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql'
-import { globalIdField } from 'graphql-relay'
+import {
+  connectionArgs,
+  connectionDefinitions,
+  globalIdField
+} from 'graphql-relay'
 
 import { GraphQLContext } from 'src/graphql/types'
 import { pool } from 'src/index'
@@ -33,6 +37,9 @@ export const UserType = new GraphQLObjectType({
     password: { type: GraphQLString },
     interests: {
       type: GraphQLList(GraphQLString),
+      args: {
+        ...connectionArgs
+      },
       resolve: async (user) => await getUserInterests(user.email)
     }
   }),
@@ -59,4 +66,9 @@ registerTypeLoader(UserType, async (context: GraphQLContext, id: string) => {
     console.log(`Error on registerTypeLoader UserType: ${error}`)
     return null
   }
+})
+
+export const UserConnection = connectionDefinitions({
+  name: 'User',
+  nodeType: UserType
 })
