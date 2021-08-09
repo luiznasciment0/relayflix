@@ -1,7 +1,8 @@
 import { GraphQLString, GraphQLNonNull } from 'graphql'
 import bcrypt from 'bcrypt'
-import { pool } from '../../../index'
-import UserType from '../../../modules/user/UserType'
+
+import { pool } from 'src/index'
+import { UserType } from 'src/modules/user/UserType'
 import { checkUserEmail } from '../checkUserEmail'
 
 type CreateUserArgs = {
