@@ -1,4 +1,4 @@
-import { pool } from '../..'
+import { pool } from 'src'
 
 type User = {
   name: string

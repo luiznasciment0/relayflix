@@ -1,6 +1,9 @@
 import { GraphQLString, GraphQLNonNull, GraphQLList } from 'graphql'
-import { pool } from '../../../'
-import UserType from '../../../modules/user/UserType'
+import { mutationWithClientMutationId } from 'graphql-relay'
+
+import { errorField } from 'src/graphql/errorField'
+import { successField } from 'src/graphql/successField'
+import { pool } from 'src'
 import { checkUserEmail } from '../checkUserEmail'
 
 type AddUserInterests = {
@@ -27,15 +30,13 @@ const insertUserInterests = async (interests: string[], email: string) => {
   }
 }
 
-const addUserInterests = {
-  type: UserType,
-  args: {
+const UserAddInterestsMutation = mutationWithClientMutationId({
+  name: 'UserAddInterestsMutation',
+  inputFields: {
     email: { type: GraphQLNonNull(GraphQLString) },
     interests: { type: GraphQLNonNull(GraphQLList(GraphQLString)) }
   },
-  resolve: async (_parent: any, args: any) => {
-    const { email, interests }: AddUserInterests = args
-
+  mutateAndGetPayload: async ({ email, interests }: AddUserInterests) => {
     const hasUser = await checkUserEmail(email)
     if (!hasUser.userAlreadyExists) {
       return {
@@ -54,13 +55,15 @@ const addUserInterests = {
     }
 
     return {
-      interests: {
-        email,
-        interests
-      },
-      error: null
+      email,
+      interests,
+      success: 'User interests registered with success'
     }
+  },
+  outputFields: {
+    ...errorField,
+    ...successField
   }
-}
+})
 
-export default addUserInterests
+export default UserAddInterestsMutation

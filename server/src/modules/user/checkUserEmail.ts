@@ -1,4 +1,4 @@
-import { pool } from '../..'
+import { pool } from 'src'
 
 export const checkUserEmail = async (
   email: string
