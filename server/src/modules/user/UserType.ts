@@ -5,10 +5,9 @@ import {
   globalIdField
 } from 'graphql-relay'
 
-import { GraphQLContext } from 'src/graphql/types'
-import { pool } from 'src/index'
 import { nodeInterface, registerTypeLoader } from '../node/typeRegister'
 import { getUserInterests } from './getUserInterests'
+import { UserLoader } from './UserLoader'
 
 export interface IUser {
   name: string
@@ -46,27 +45,7 @@ export const UserType = new GraphQLObjectType({
   interfaces: () => [nodeInterface]
 })
 
-registerTypeLoader(UserType, async (context: GraphQLContext, id: string) => {
-  if (!id) {
-    return null
-  }
-
-  try {
-    const data = await pool.query(
-      'select name, username, email, interests from users where email = ($1)',
-      [context.user?.email]
-    )
-
-    if (!data) {
-      return null
-    }
-
-    return data
-  } catch (error) {
-    console.log(`Error on registerTypeLoader UserType: ${error}`)
-    return null
-  }
-})
+registerTypeLoader(UserType, UserLoader.load)
 
 export const UserConnection = connectionDefinitions({
   name: 'User',
