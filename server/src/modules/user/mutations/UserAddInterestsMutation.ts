@@ -28,7 +28,7 @@ const insertUserInterests = async (interests: string[], email: string) => {
   }
 }
 
-const addUserInterests = {
+const UserAddInterestsMutation = {
   type: UserType,
   args: {
     email: { type: GraphQLNonNull(GraphQLString) },
@@ -64,4 +64,4 @@ const addUserInterests = {
   }
 }
 
-export default addUserInterests
+export default UserAddInterestsMutation
