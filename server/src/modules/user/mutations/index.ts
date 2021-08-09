@@ -1,12 +1,12 @@
 import { GraphQLObjectType } from 'graphql'
-import createUser from './createUser'
-import addUserInterests from './addUserInterests'
+import UserRegisterMutation from './UserRegisterMutation'
+import UserAddInterestsMutation from './UserAddInterestsMutation'
 
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
-    createUser,
-    addUserInterests
+    UserRegisterMutation,
+    UserAddInterestsMutation
   }
 })
 
