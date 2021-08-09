@@ -1,8 +1,10 @@
 import { GraphQLString, GraphQLNonNull } from 'graphql'
 import bcrypt from 'bcrypt'
+import { mutationWithClientMutationId } from 'graphql-relay'
 
-import { pool } from 'src/index'
-import { UserType } from 'src/modules/user/UserType'
+import { pool } from 'src'
+import { errorField } from 'src/graphql/errorField'
+import { successField } from 'src/graphql/successField'
 import { checkUserEmail } from '../checkUserEmail'
 
 type CreateUserArgs = {
@@ -56,17 +58,33 @@ const checkMissedUserData = ({
   }
 }
 
-const createUser = {
-  type: UserType,
-  args: {
-    name: { type: GraphQLNonNull(GraphQLString) },
-    username: { type: GraphQLNonNull(GraphQLString) },
-    email: { type: GraphQLNonNull(GraphQLString) },
-    password: { type: GraphQLNonNull(GraphQLString) }
+const UserRegisterMutation = mutationWithClientMutationId({
+  name: 'UserRegisterMutation',
+  inputFields: {
+    name: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
+    username: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
+    email: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
+    password: {
+      type: new GraphQLNonNull(GraphQLString)
+    }
   },
-  resolve: async (_parent: any, args: any) => {
-    const { name, username, email, password }: CreateUserArgs = args
-
+  mutateAndGetPayload: async ({
+    name,
+    username,
+    email,
+    password
+  }: {
+    name: string
+    username: string
+    email: string
+    password: string
+  }) => {
     const isMissingUserData = !name || !username || !email || !password
     if (isMissingUserData) {
       return {
@@ -106,15 +124,14 @@ const createUser = {
     }
 
     return {
-      user: {
-        name,
-        username,
-        email,
-        password
-      },
-      error: null
+      email,
+      success: 'User registered with success'
     }
+  },
+  outputFields: {
+    ...errorField,
+    ...successField
   }
-}
+})
 
-export default createUser
+export default UserRegisterMutation
