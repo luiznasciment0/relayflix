@@ -1,7 +1,7 @@
 import { GraphQLObjectType, GraphQLTypeResolver } from 'graphql'
 import { fromGlobalId, nodeDefinitions } from 'graphql-relay'
+import { GraphQLContext } from 'src/graphql/types'
 
-type GraphQLContext = Record<string, unknown>
 type Load = (context: GraphQLContext, id: string) => any
 type TypeLoaders = {
   [key: string]: {
